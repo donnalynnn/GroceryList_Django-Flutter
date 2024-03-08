@@ -1,8 +1,10 @@
 # from django.http import JsonResponse
+from urllib import response
 from  rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import GroceryListSerializer
 from .models import GroceryList
+from api import serializers
 
 @api_view (['GET'])
 def getRoutes(request):
@@ -44,4 +46,29 @@ def getRoutes(request):
 def getGroceryList(request):
     grocerylists = GroceryList.objects.all()
     serializer = GroceryListSerializer(grocerylists, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def getProduct(request, pk):
+    product = GroceryList.objects.get(id=pk)
+    serializer = GroceryListSerializer(product, many=False)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def createList(request):
+    data = request.data
+    product = GroceryList.objects.create(
+        body= data['body']
+    )
+    serializer = GroceryListSerializer(product, many=False)
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+def updateProduct(request, pk):
+    data = request.data
+    product = GroceryList.objects.get(id=pk)
+    serializer = GroceryListSerializer(product, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
     return Response(serializer.data)
