@@ -72,3 +72,9 @@ def updateProduct(request, pk):
     if serializer.is_valid():
         serializer.save()
     return Response(serializer.data)
+
+@api_view(['DELETE'])
+def deleteProduct(request, pk):
+    product = GroceryList.objects.get(id=pk)
+    product.delete()
+    return Response('Product deleted')
